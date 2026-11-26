@@ -68,8 +68,12 @@ class Commands {
         return this.onstar.getAccountVehicles();
     }
 
-    async startVehicle() {
-        return this.onstar.start();
+    // HOMELAB PATCH: upstream drops options here, so onstarjs2's start({ cabinTemperature })
+    // (whole degrees Celsius) was unreachable over MQTT. Publishing
+    // {"command":"startVehicle","options":{"cabinTemperature":21}} now passes it through;
+    // a bare startVehicle (the HA button) sends {} and behaves exactly as before.
+    async startVehicle(options = {}) {
+        return this.onstar.start(options);
     }
 
     async cancelStartVehicle() {
